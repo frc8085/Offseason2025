@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.States.DriveState;
 import frc.robot.subsystems.Limelight.LimelightHelpers;
 import frc.robot.subsystems.Limelight.LimelightHelpers.PoseEstimate;
 import choreo.trajectory.SwerveSample;
@@ -386,8 +385,7 @@ public class DriveSubsystem extends SubsystemBase {
     double vy = speed * Math.sin(joystickAngle);
     double vx = speed * Math.cos(joystickAngle);
 
-    double maxDrivableSpeed = DriveState.elevatorMultiplier * dElevatorSpeed
-        + DriveConstants.kMinSpeedMetersPerSecondMaxElevatorHeight;
+    double maxDrivableSpeed = DriveConstants.kMinSpeedMetersPerSecondMaxElevatorHeight;
 
     SmartDashboard.putNumber("Max drivable speed",
         maxDrivableSpeed);
