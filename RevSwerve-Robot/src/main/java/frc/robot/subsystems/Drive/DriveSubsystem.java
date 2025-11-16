@@ -385,7 +385,7 @@ public class DriveSubsystem extends SubsystemBase {
     double vy = speed * Math.sin(joystickAngle);
     double vx = speed * Math.cos(joystickAngle);
 
-    double maxDrivableSpeed = DriveConstants.kMinSpeedMetersPerSecondMaxElevatorHeight;
+    double maxDrivableSpeed = DriveConstants.kMaxSpeedMetersPerSecond;
 
     SmartDashboard.putNumber("Max drivable speed",
         maxDrivableSpeed);
