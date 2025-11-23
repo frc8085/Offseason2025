@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.Limelight;
+package frc.robot.sensors.Limelight;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TuningModeConstants;
 
-public class LimelightSubsystem extends SubsystemBase {
+public class LimelightSensor {
     private boolean TUNING_MODE = TuningModeConstants.kLimelightTuning;
 
     enum Color {
@@ -25,7 +25,7 @@ public class LimelightSubsystem extends SubsystemBase {
     private String m_limelightBlue = "limelight-blue";
     private String m_limelightYellow = "limelight-yellow";
 
-    public LimelightSubsystem() {
+    public LimelightSensor() {
         // Setting up the limelight pose
         LimelightHelpers.setCameraPose_RobotSpace(m_limelightBlue, LimelightConstants.limelightBlueForward,
                 LimelightConstants.limelightBlueSide, LimelightConstants.limelightBlueUp,
@@ -37,27 +37,27 @@ public class LimelightSubsystem extends SubsystemBase {
                 LimelightConstants.limelightYellowYaw);
     }
 
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
-        // read values periodically
-        SmartDashboard.putBoolean("B Target", hasTarget("limelight-blue"));
-        SmartDashboard.putBoolean("Y Target", hasTarget("limelight-yellow"));
-        if (TUNING_MODE || true) {
-            // SmartDashboard.putNumber("April tag ID", getAprilTagID("limelight-blue"));
-            SmartDashboard.putNumber("B LL ID", getID("limelight-blue"));
+    // @Override
+    // public void periodic() {
+    //     // This method will be called once per scheduler run
+    //     // read values periodically
+    //     SmartDashboard.putBoolean("B Target", hasTarget("limelight-blue"));
+    //     SmartDashboard.putBoolean("Y Target", hasTarget("limelight-yellow"));
+    //     if (TUNING_MODE || true) {
+    //         // SmartDashboard.putNumber("April tag ID", getAprilTagID("limelight-blue"));
+    //         SmartDashboard.putNumber("B LL ID", getID("limelight-blue"));
 
-            SmartDashboard.putNumber("B LL X", getX("limelight-blue"));
-            SmartDashboard.putNumber("B LL Y", getY("limelight-blue"));
+    //         SmartDashboard.putNumber("B LL X", getX("limelight-blue"));
+    //         SmartDashboard.putNumber("B LL Y", getY("limelight-blue"));
 
-            // SmartDashboard.putNumber("April tag ID", getAprilTagID("limelight-yellow"));
-            SmartDashboard.putNumber("Y LL ID", getID("limelight-yellow"));
+    //         // SmartDashboard.putNumber("April tag ID", getAprilTagID("limelight-yellow"));
+    //         SmartDashboard.putNumber("Y LL ID", getID("limelight-yellow"));
 
-            SmartDashboard.putNumber("Y LL X", getX("limelight-yellow"));
-            SmartDashboard.putNumber("Y LL Y", getY("limelight-yellow"));
-        }
+    //         SmartDashboard.putNumber("Y LL X", getX("limelight-yellow"));
+    //         SmartDashboard.putNumber("Y LL Y", getY("limelight-yellow"));
+    //     }
 
-    }
+    // }
 
     public double getX(String limelightName) {
         return LimelightHelpers.getTX(limelightName);

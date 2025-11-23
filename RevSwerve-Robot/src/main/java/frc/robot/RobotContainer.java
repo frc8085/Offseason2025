@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drivetrain.SwerveDriveTeleop;
 import frc.robot.io.IO;
 import frc.robot.subsystems.Drive.DriveSubsystem;
-import frc.robot.subsystems.Limelight.LimelightSubsystem;
+import frc.robot.sensors.Limelight.LimelightSensor;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -29,7 +29,7 @@ public class RobotContainer {
   // The robot's subsystems
 
   public final DriveSubsystem drivetrain = new DriveSubsystem();
-  public final LimelightSubsystem limelight = new LimelightSubsystem();
+  // public final LimelightSubsystem limelight = new LimelightSubsystem();
 
   private final SendableChooser<Command> autoChooser;
   protected SendableChooser<Alliance> allianceColor = new SendableChooser<>();

@@ -28,8 +28,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.subsystems.Limelight.LimelightHelpers;
-import frc.robot.subsystems.Limelight.LimelightHelpers.PoseEstimate;
+import frc.robot.sensors.Limelight.LimelightHelpers;
+import frc.robot.sensors.Limelight.LimelightHelpers.PoseEstimate;
 import choreo.trajectory.SwerveSample;
 
 public class DriveSubsystem extends SubsystemBase {

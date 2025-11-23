@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Limelight;
+package frc.robot.sensors.Limelight;
 
 public final class LimelightConstants {
 
