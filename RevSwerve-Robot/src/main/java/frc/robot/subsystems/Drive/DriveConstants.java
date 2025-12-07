@@ -20,7 +20,7 @@ public final class DriveConstants {
     public static final int kRearRightTurningCanId = 14;
 
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 4.12; // Rev stated max speed
+    public static final double kMaxSpeedMetersPerSecond = 0.5; // Rev stated max speed
 
     // what is the multiplier for the speed decrease
     public static final double kMinSpeedMetersPerSecondMaxElevatorHeightMul = 0.025;
