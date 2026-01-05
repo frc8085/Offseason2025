@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.OIConstants;
 import frc.robot.io.Keymap.Controllers;
+import frc.robot.subsystems.Drive.DriveConstants;
 import frc.robot.subsystems.Drive.DriveSubsystem;
 
 public class SwerveDriveTeleop extends Command {
@@ -34,6 +35,8 @@ public class SwerveDriveTeleop extends Command {
 
         // uses distance formula (the Pythagorean theorem) to get the speed of the robot, this is done by getting the joysticks distance from the center.
         double speedVal = Math.sqrt(Math.pow(leftY, 2)+Math.pow(leftX, 2));
+        //makes the speed exponential, this can probably be done better but IDK how.
+        speedVal = Math.pow(speedVal, DriveConstants.kDriveStickExponentialRate);
 
         this.driveSubsystem.drive(
                 speedVal,

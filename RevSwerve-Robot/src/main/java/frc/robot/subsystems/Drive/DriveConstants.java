@@ -21,6 +21,8 @@ public final class DriveConstants {
 
     // the robot, rather the allowed maximum speeds
     public static final double kMaxSpeedMetersPerSecond = 4.12; // Rev stated max speed
+    // the exponent that is applied to the stick when calculating speed
+    public static final double kDriveStickExponentialRate = 3;
 
     // what is the multiplier for the speed decrease
     public static final double kMinSpeedMetersPerSecondMaxElevatorHeightMul = 0.025;
@@ -66,5 +68,4 @@ public final class DriveConstants {
     public static final class FakeConstants {
         public static boolean fieldRelative = true;
     }
-
 }
