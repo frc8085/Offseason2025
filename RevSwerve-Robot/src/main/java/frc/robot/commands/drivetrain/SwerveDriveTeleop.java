@@ -22,7 +22,6 @@ public class SwerveDriveTeleop extends Command {
 
     @Override
     public void execute() {
-        double speedVal = MathUtil.applyDeadband(Math.pow(Controllers.driverController.getRightTriggerAxis(), 2), 0);
 
         double invert = this.driveSubsystem.invertForAlliance();
 
@@ -32,6 +31,9 @@ public class SwerveDriveTeleop extends Command {
                 OIConstants.kDriveDeadband);
         double rightX = MathUtil.applyDeadband(-Math.pow(Controllers.driverController.getRightX(), 3),
                 OIConstants.kTurnDeadband);
+
+        // uses distance formula (the Pythagorean theorem) to get the speed of the robot, this is done by getting the joysticks distance from the center.
+        double speedVal = Math.sqrt(Math.pow(leftY, 2)+Math.pow(leftX, 2));
 
         this.driveSubsystem.drive(
                 speedVal,
