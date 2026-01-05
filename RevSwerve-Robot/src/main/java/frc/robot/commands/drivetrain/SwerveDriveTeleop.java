@@ -36,7 +36,7 @@ public class SwerveDriveTeleop extends Command {
         // uses distance formula (the Pythagorean theorem) to get the speed of the robot, this is done by getting the joysticks distance from the center.
         double speedVal = Math.sqrt(Math.pow(leftY, 2)+Math.pow(leftX, 2));
         //makes the speed exponential, this can probably be done better but IDK how.
-        speedVal = Math.pow(speedVal, DriveConstants.kDriveStickExponentialRate);
+        speedVal = Math.abs(Math.pow(speedVal, DriveConstants.kDriveStickExponentialRate));
 
         this.driveSubsystem.drive(
                 speedVal,
