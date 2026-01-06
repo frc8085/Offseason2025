@@ -496,4 +496,8 @@ public class DriveSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble() + DriveConstants.GYRO_OFFSET);
   }
 
+  public void simulationPeriodic() {
+    SmartDashboard.putData("Field", field);
+    field.setRobotPose(getPose());
+  }
 }
