@@ -21,6 +21,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -74,6 +76,10 @@ public class DriveSubsystem extends SubsystemBase {
 
   // This section was copied from 2024 code, I think for auto
   public Field2d field = new Field2d();
+
+  //raw swerve logging
+  StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
+  .getStructArrayTopic("SwerveStates", SwerveModuleState.struct).publish();
 
   // Copied from 6616 - PID Controller for orientation to supplied angle
   private final PIDController orientationController;
@@ -258,6 +264,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("fieldRelative", DriveConstants.FakeConstants.fieldRelative);
     double[] poseData = { this.getPose().getX(), this.getPose().getY(), this.getPose().getRotation().getRadians() };
     SmartDashboard.putNumberArray("Robot Pose", poseData);
+    publisher.set(getModuleStates());
   }
 
   public void followTrajectory(SwerveSample sample) {
