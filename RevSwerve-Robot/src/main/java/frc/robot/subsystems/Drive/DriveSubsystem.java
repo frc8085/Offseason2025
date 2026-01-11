@@ -16,6 +16,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -31,6 +32,8 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.Limelight.LimelightHelpers;
 import frc.robot.subsystems.Limelight.LimelightHelpers.PoseEstimate;
 import choreo.trajectory.SwerveSample;
+import gg.questnav.questnav.PoseFrame;
+import gg.questnav.questnav.QuestNav;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -68,6 +71,8 @@ public class DriveSubsystem extends SubsystemBase {
   private PIDController xController = new PIDController(kXP, kXI, kXD, 0.02);
   private PIDController yController = new PIDController(kYP, kYI, kYD, 0.02);
   private PIDController headingController = new PIDController(kRotP, kRotI, kRotD, 0.02);
+
+  private QuestNav questNav = new QuestNav();
 
   // The gyro sensor
   private final Pigeon2 m_gyro = new Pigeon2(DriveConstants.kGyroCanId);
@@ -136,6 +141,10 @@ public class DriveSubsystem extends SubsystemBase {
     orientationController.enableContinuousInput(-180, 180);
 
     SmartDashboard.putBoolean("useMegatag2", true);
+    // QuestNav
+    // THIS IS A DUMMY VALUE AND NEEDS CHANING
+    Pose3d initialPose = new Pose3d();
+    questNav.setPose(initialPose);
 
   }
 
@@ -258,6 +267,19 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("fieldRelative", DriveConstants.FakeConstants.fieldRelative);
     double[] poseData = { this.getPose().getX(), this.getPose().getY(), this.getPose().getRotation().getRadians() };
     SmartDashboard.putNumberArray("Robot Pose", poseData);
+
+    questNav.commandPeriodic(); // Process command responses
+
+    // Get latest pose data
+    PoseFrame[] newFrames = questNav.getAllUnreadPoseFrames();
+    for (PoseFrame frame : newFrames) {
+      // Use frame.questPose() and frame.dataTimestamp() with pose estimator
+    }
+
+    // Monitor connection and device status
+    if (questNav.isConnected() && questNav.isTracking()) {
+      // Quest is connected and tracking - safe to use pose data
+    }
   }
 
   public void followTrajectory(SwerveSample sample) {
