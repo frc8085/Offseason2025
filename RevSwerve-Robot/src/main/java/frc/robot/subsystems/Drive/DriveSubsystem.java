@@ -273,7 +273,14 @@ public class DriveSubsystem extends SubsystemBase {
     // Get latest pose data
     PoseFrame[] newFrames = questNav.getAllUnreadPoseFrames();
     for (PoseFrame frame : newFrames) {
-      // Use frame.questPose() and frame.dataTimestamp() with pose estimator
+      if (questNav.isTracking()) {
+        this.m_odometry.addVisionMeasurement(
+        frame.questPose3d().toPose2d(),
+        frame.dataTimestamp(),
+        //these need to be adjusted
+        VecBuilder.fill(0.1, 0.1, 0.1)
+    );
+      }
     }
 
     // Monitor connection and device status
