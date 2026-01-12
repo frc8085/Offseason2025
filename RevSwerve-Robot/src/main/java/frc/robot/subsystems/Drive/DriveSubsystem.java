@@ -18,6 +18,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -143,7 +144,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("useMegatag2", true);
     // QuestNav
     // THIS IS A DUMMY VALUE AND NEEDS CHANING
-    Pose3d initialPose = new Pose3d();
+    Pose3d initialPose = new Pose3d(0,0,0,new Rotation3d(0,0,0));
     questNav.setPose(initialPose);
 
   }
