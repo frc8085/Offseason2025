@@ -56,13 +56,22 @@ public class SparkMotor implements PIDMotor {
     @Override
     public double getVelocity() {
         return this.mMotorREncoder.getVelocity();
-
-
     }
 
     @Override
     public void setEncoderPosition(double reference) {
         
+    }
+
+    @Override
+    public double getSpeed() {
+        return this.mMotor.get();
+    }
+
+
+    @Override
+    public void setSpeed(double reference) {
+        this.mMotor.set(reference);
     }
 
 }

@@ -7,30 +7,21 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 
-import com.revrobotics.spark.SparkMax;
-
-public class KrakenMotor implements PIDMotor, Motor {
+public class TalonFXMotor implements PIDMotor {
 
     private final TalonFX TalonFX;
-
-
 
     private MotionMagicVoltage motionMagicPositionControl = new MotionMagicVoltage(0);
     private MotionMagicVelocityVoltage motionMagicVelocityControl = new MotionMagicVelocityVoltage(0);
     private StatusSignal<Angle> motorPosition;
     private StatusSignal<AngularVelocity> motorVelocity;
 
-    public KrakenMotor(int id) {
+    public TalonFXMotor(int id) {
         this.TalonFX = new TalonFX(id, "rio");
         this.motorPosition = this.TalonFX.getPosition();
         this.motorVelocity = this.TalonFX.getVelocity();
@@ -80,11 +71,11 @@ public class KrakenMotor implements PIDMotor, Motor {
 
     @Override
     public void setSpeed(double speed) {
-
+        this.TalonFX.set(speed);
     }
 
     @Override
     public double getSpeed() {
-        return 0;
+        return this.TalonFX.get();
     }
 }

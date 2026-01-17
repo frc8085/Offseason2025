@@ -23,12 +23,12 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Configs;
-import frc.robot.lib.KrakenMotor;
+import frc.robot.lib.TalonFXMotor;
 import frc.robot.lib.PIDMotor;
 
 public class MAXSwerveModule {
   private final PIDMotor m_drivingMotor;
-  private final SparkFlex m_turningSpark;
+  private final SparkMax m_turningSpark;
 
   private final AbsoluteEncoder m_turningEncoder;
 
@@ -44,7 +44,7 @@ public class MAXSwerveModule {
    * Encoder.
    */
   public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
-    m_turningSpark = new SparkFlex(turningCANId, MotorType.kBrushless);
+    m_turningSpark = new SparkMax(turningCANId, MotorType.kBrushless);
 
     m_turningEncoder = m_turningSpark.getAbsoluteEncoder();
 
@@ -59,8 +59,8 @@ public class MAXSwerveModule {
     slot0Configs.kI = 0;
     slot0Configs.kD = 0;
     slot0Configs.kV = 0.12;
-    slot0Configs.kA = 0.15;
-    slot0Configs.kS = 0.25;
+    slot0Configs.kA = 0.01;
+    slot0Configs.kS = 0.20;
 
     TalonFXConfiguration config = new TalonFXConfiguration();
 
@@ -69,11 +69,10 @@ public class MAXSwerveModule {
     config.CurrentLimits.StatorCurrentLimit = 50;
     config.CurrentLimits.SupplyCurrentLimit = 50;
 
-    config.MotionMagic.MotionMagicCruiseVelocity = 20;
-    config.MotionMagic.MotionMagicAcceleration = 600;
+    config.MotionMagic.MotionMagicAcceleration = 400;
     config.MotionMagic.MotionMagicJerk = 6000;
 
-    KrakenMotor drive = new KrakenMotor(drivingCANId);
+    TalonFXMotor drive = new TalonFXMotor(drivingCANId);
 
     drive.applyConfigs(config);
 
@@ -129,7 +128,15 @@ public class MAXSwerveModule {
     correctedDesiredState.optimize(new Rotation2d(m_turningEncoder.getPosition()));
 
     // Command driving and turning SPARKS towards their respective setpoints.
-    m_drivingMotor.setMotorVelocity(correctedDesiredState.speedMetersPerSecond);
+    // System.out.println("speed MPS: " +
+    // correctedDesiredState.speedMetersPerSecond);
+
+    double wheelSpeed = correctedDesiredState.speedMetersPerSecond / ModuleConstants.kWheelCircumferenceMeters;
+
+    double motorSpeed = ModuleConstants.kDrivingMotorReduction * wheelSpeed;
+
+    m_drivingMotor.setMotorVelocity(motorSpeed);
+    // this.m_drivingMotor.setSpeed(0.2);
     m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
 
     m_desiredState = desiredState;

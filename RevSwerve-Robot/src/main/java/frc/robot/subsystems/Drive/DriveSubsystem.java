@@ -375,9 +375,6 @@ public class DriveSubsystem extends SubsystemBase {
       speed = 0;
     }
 
-    double dElevatorSpeed = DriveConstants.kMaxSpeedMetersPerSecond
-        - DriveConstants.kMinSpeedMetersPerSecondMaxElevatorHeight;
-
     // Convert the commanded speeds into the correct units(angle) for the drivetrain
     double joystickAngle = Math.atan2(ySpeed, xSpeed);
 
@@ -390,9 +387,15 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Max drivable speed",
         maxDrivableSpeed);
 
+    
+
     double xSpeedDelivered = vx * maxDrivableSpeed;
     double ySpeedDelivered = vy * maxDrivableSpeed;
     double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
+
+    // System.out.println("vx " + xSpeedDelivered);
+    // System.out.println("vy " + ySpeedDelivered);
+    // System.out.println("rot " + rotDelivered);
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
