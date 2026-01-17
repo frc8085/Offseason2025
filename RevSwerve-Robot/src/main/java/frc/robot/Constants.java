@@ -104,6 +104,7 @@ public final class Constants {
     public static final MotorType Neo550MotorType = MotorType.kBrushless;
     public static final MotorType NeoVortexMotorType = MotorType.kBrushless;
     public static final double NeoMotorFreeSpeedRpm = 5676;
+    public static final double KrakenMotorFreeSpeedRpm = 6000;
 
   }
 

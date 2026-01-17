@@ -15,19 +15,23 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Configs;
+import frc.robot.lib.TalonFXMotor;
+import frc.robot.lib.PIDMotor;
 
 public class MAXSwerveModule {
-  private final SparkFlex m_drivingSpark;
+  private final PIDMotor m_drivingMotor;
   private final SparkMax m_turningSpark;
 
-  private final RelativeEncoder m_drivingEncoder;
   private final AbsoluteEncoder m_turningEncoder;
 
-  private final SparkClosedLoopController m_drivingClosedLoopController;
   private final SparkClosedLoopController m_turningClosedLoopController;
 
   private double m_chassisAngularOffset = 0;
@@ -40,26 +44,48 @@ public class MAXSwerveModule {
    * Encoder.
    */
   public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
-    m_drivingSpark = new SparkFlex(drivingCANId, MotorType.kBrushless);
     m_turningSpark = new SparkMax(turningCANId, MotorType.kBrushless);
 
-    m_drivingEncoder = m_drivingSpark.getEncoder();
     m_turningEncoder = m_turningSpark.getAbsoluteEncoder();
 
-    m_drivingClosedLoopController = m_drivingSpark.getClosedLoopController();
     m_turningClosedLoopController = m_turningSpark.getClosedLoopController();
 
     // Apply the respective configurations to the SPARKS. Reset parameters before
     // applying the configuration to bring the SPARK to a known good state. Persist
     // the settings to the SPARK to avoid losing them on a power cycle.
-    m_drivingSpark.configure(Configs.MAXSwerveModule.drivingConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+
+    var slot0Configs = new Slot0Configs();
+    slot0Configs.kP = 0.11;
+    slot0Configs.kI = 0;
+    slot0Configs.kD = 0;
+    slot0Configs.kV = 0.12;
+    slot0Configs.kA = 0.01;
+    slot0Configs.kS = 0.20;
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
+
+    // config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.CurrentLimits.StatorCurrentLimit = 50;
+    config.CurrentLimits.SupplyCurrentLimit = 50;
+
+    config.MotionMagic.MotionMagicAcceleration = 400;
+    config.MotionMagic.MotionMagicJerk = 6000;
+
+    TalonFXMotor drive = new TalonFXMotor(drivingCANId);
+
+    drive.applyConfigs(config);
+
+    drive.applySlotConfigs(slot0Configs);
+
+    m_drivingMotor = drive;
+
     m_turningSpark.configure(Configs.MAXSwerveModule.turningConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
     m_chassisAngularOffset = chassisAngularOffset;
     m_desiredState.angle = new Rotation2d(m_turningEncoder.getPosition());
-    m_drivingEncoder.setPosition(0);
+    // m_drivingEncoder.setPosition(0);
   }
 
   /**
@@ -70,7 +96,7 @@ public class MAXSwerveModule {
   public SwerveModuleState getState() {
     // Apply chassis angular offset to the encoder position to get the position
     // relative to the chassis.
-    return new SwerveModuleState(m_drivingEncoder.getVelocity(),
+    return new SwerveModuleState(m_drivingMotor.getVelocity(),
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
   }
 
@@ -83,7 +109,7 @@ public class MAXSwerveModule {
     // Apply chassis angular offset to the encoder position to get the position
     // relative to the chassis.
     return new SwerveModulePosition(
-        m_drivingEncoder.getPosition(),
+        this.m_drivingMotor.getPosition(),
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
   }
 
@@ -102,7 +128,15 @@ public class MAXSwerveModule {
     correctedDesiredState.optimize(new Rotation2d(m_turningEncoder.getPosition()));
 
     // Command driving and turning SPARKS towards their respective setpoints.
-    m_drivingClosedLoopController.setReference(correctedDesiredState.speedMetersPerSecond, ControlType.kVelocity);
+    // System.out.println("speed MPS: " +
+    // correctedDesiredState.speedMetersPerSecond);
+
+    double wheelSpeed = correctedDesiredState.speedMetersPerSecond / ModuleConstants.kWheelCircumferenceMeters;
+
+    double motorSpeed = ModuleConstants.kDrivingMotorReduction * wheelSpeed;
+
+    m_drivingMotor.setMotorVelocity(motorSpeed);
+    // this.m_drivingMotor.setSpeed(0.2);
     m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
 
     m_desiredState = desiredState;
@@ -110,6 +144,6 @@ public class MAXSwerveModule {
 
   /** Zeroes all the SwerveModule encoders. */
   public void resetEncoders() {
-    m_drivingEncoder.setPosition(0);
+    m_drivingMotor.setEncoderPosition(0);
   }
 }
